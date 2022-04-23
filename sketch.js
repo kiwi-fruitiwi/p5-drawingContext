@@ -10,6 +10,8 @@ let font
 let instructions
 let img
 
+let dc
+let milk
 
 function preload() {
     font = loadFont('data/consola.ttf')
@@ -32,47 +34,61 @@ function setup() {
         z → freeze sketch</pre>`)
 
     img.resize(0, 300)
+    dc = drawingContext
+    milk = color(207, 7, 99)
     // noLoop()
 }
 
 
 function draw() {
     background(234, 34, 24)
-    sceneRectGlow()
 
-    image(img, width*3/4, height/2)
+    sceneRectGlow()
+    sceneCardGlow()
+
     displayDebugCorner()
 }
 
 
 function resetDcShadow() {
-    drawingContext.shadowBlur = 0
-    drawingContext.shadowOffsetY = 0
-    drawingContext.shadowOffsetX = 0
+    dc.shadowBlur = 0
+    dc.shadowOffsetY = 0
+    dc.shadowOffsetX = 0
 }
 
 
+function sceneCardGlow() {
+    glow(16, milk, 20)
 
+    const offset = 5
+    dc.shadowOffsetX = map(mouseX, 0, width, -offset, offset)
+    dc.shadowOffsetY = map(mouseY, 0, height, offset, -offset)
+
+    image(img, width*3/4, height/2)
+    resetDcShadow()
+}
 
 
 function sceneRectGlow() {
     rectMode(CENTER)
+    glow(16, milk, 20)
 
-    const milk = color(207, 7, 99)
-    // fill(milk)
-    noFill()
-    stroke(milk)
-    strokeWeight(20)
-
-    const dc = drawingContext
     const offset = 5
     dc.shadowOffsetX = map(mouseX, 0, width, offset, -offset)
     dc.shadowOffsetY = map(mouseY, 0, height, offset, -offset)
-    dc.shadowBlur = 16
-    dc.shadowColor = milk
-    rect(width/4, height/2, 120, 120, 20)
 
+    rect(width/4, height/2, 120, 120, 20)
     resetDcShadow()
+}
+
+
+function glow(shadowBlur, color, weight) {
+    noFill()
+    stroke(milk)
+    strokeWeight(weight)
+
+    dc.shadowBlur = shadowBlur
+    dc.shadowColor = color
 }
 
 
